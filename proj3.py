@@ -16,19 +16,54 @@ class MinHeap:
     data: list[Node] = field(default_factory=list)
 
 def heapify_up(heap: MinHeap, index: int) -> MinHeap:
+    new_heap = heap[:]
 
+    if index == 0:
+        return MinHeap(new_heap)
+    
+    parent = (index - 1) // 2
+
+    if new_heap[index] < new_heap[parent]:
+        temp = new_heap[index]
+        new_heap[index] = new_heap[parent]
+        new_heap[parent] = temp
+        return heapify_up(MinHeap(new_heap), parent)
+    
+    return MinHeap(new_heap)
 
 def insert(heap: MinHeap, element: Node) -> MinHeap:
-
+    new_heap = heap.data + [element]
+    new_heap = heapify_up(MinHeap(new_heap), len(new_heap) - 1)
+    return MinHeap(new_heap)
 
 def heapify_down(heap: MinHeap, index: int) -> MinHeap:
+    new_heap = heap[:]
+    left = 2 * index + 1
+    right = 2 * index + 2
+    size = len(new_heap)
 
+    smallest = left 
+
+    if right < size and new_heap[right] < new_heap[left]:
+        smallest = right
+    
+    if new_heap[smallest] < new_heap[index]:
+        temp = new_heap[index]
+        new_heap[index] = new_heap[smallest]
+        new_heap[smallest] = temp
+        return heapify_down(MinHeap(new_heap), smallest)
+    
+    return MinHeap(new_heap)
 
 
 def extract_min(heap: MinHeap) -> tuple[MinHeap, Node]:
+    last_value = heap.data[-1]
+    new_heap = [last_value] + heap.data[1:-1]
 
+    min_element = heap.data[0]
 
-
+    new_heap = heapify_down(MinHeap(new_heap), 0)
+    return MinHeap(new_heap), min_element
         
 def count_frequency(s: str)-> dict[str,int]:
 
