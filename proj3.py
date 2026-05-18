@@ -16,7 +16,7 @@ class MinHeap:
     data: list[Node] = field(default_factory=list)
 
 def heapify_up(heap: MinHeap, index: int) -> MinHeap:
-    new_heap = heap[:]
+    new_heap = heap.data[:]
 
     if index == 0:
         return MinHeap(new_heap)
@@ -34,10 +34,10 @@ def heapify_up(heap: MinHeap, index: int) -> MinHeap:
 def insert(heap: MinHeap, element: Node) -> MinHeap:
     new_heap = heap.data + [element]
     new_heap = heapify_up(MinHeap(new_heap), len(new_heap) - 1)
-    return MinHeap(new_heap)
+    return new_heap
 
 def heapify_down(heap: MinHeap, index: int) -> MinHeap:
-    new_heap = heap[:]
+    new_heap = heap.data[:]
     left = 2 * index + 1
     right = 2 * index + 2
     size = len(new_heap)
@@ -66,20 +66,35 @@ def extract_min(heap: MinHeap) -> tuple[MinHeap, Node]:
     return MinHeap(new_heap), min_element
         
 def count_frequency(s: str)-> dict[str,int]:
-
-    pass
+    frequency = {}
+    for char in s:
+        if char in frequency:
+            frequency[char] += 1
+        else:
+            frequency[char] = 1
+    return frequency
 
 
 def create_priority_queue(frequency: dict[str, int]) -> MinHeap:
-
-    pass
-
+    heap = MinHeap()
+    for char, freq in frequency.items():
+        node = Node(freq,char)
+        heap = insert(heap, node)
+    return heap
 
 
 def build_tree(priority_queue: MinHeap) -> Node:
-    pass
+    while len(priority_queue.data) > 1:
 
+        priority_queue, left = extract_min(priority_queue)
+        priority_queue, right = extract_min(priority_queue)
 
+        merged_freq = left.freq + right.freq
+        merged_node = Node(merged_freq, '', left, right)
+        priority_queue = insert(priority_queue, merged_node)
+
+    priority_queue, root = extract_min(priority_queue)
+    return root
 
 
 def generate_codes(node: Node | None, prefix="", code: dict | None =None)-> dict:
