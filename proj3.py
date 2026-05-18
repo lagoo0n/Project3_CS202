@@ -100,7 +100,7 @@ def build_tree(priority_queue: MinHeap) -> Node:
 def generate_codes(node: Node | None, prefix="", code: dict | None =None)-> dict:
     if code is None:
         code = {}  
-    pass
+    
 
 
 def encode(s: str, codes: dict)-> str:
