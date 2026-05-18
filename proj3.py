@@ -135,6 +135,11 @@ def decode(encoded_string: str, root: Node):
         else:
             current_node = current_node.right
 
+        if current_node is None:
+            current_node = root
+            decoded_string += current_node.char
+            continue
+
         if current_node.left is None and current_node.right is None:  
             decoded_string += current_node.char
             current_node = root  
