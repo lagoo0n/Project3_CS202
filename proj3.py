@@ -98,7 +98,7 @@ def build_tree_from_queue(priority_queue: MinHeap) -> Node:
         priority_queue, right = extract_min(priority_queue)
 
         merged_freq = left.freq + right.freq
-        merged_node = Node(merged_freq, '', left, right)
+        merged_node = Node(merged_freq, left.char + right.char, left, right)
         priority_queue = insert(priority_queue, merged_node)
 
     priority_queue, root = extract_min(priority_queue)
@@ -109,7 +109,7 @@ def generate_codes(node: Node | None, prefix="", code: dict | None =None)-> dict
     if code is None:
         code = {}  
     if node is not None:
-        if node.char:
+        if node.left is None and node.right is None:
             if prefix == "":
                 code[node.char] = "0"
             else:
@@ -135,7 +135,7 @@ def decode(encoded_string: str, root: Node):
         else:
             current_node = current_node.right
 
-        if current_node.char:  
+        if current_node.left is None and current_node.right is None:  
             decoded_string += current_node.char
             current_node = root  
     return decoded_string
