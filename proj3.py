@@ -42,6 +42,9 @@ def heapify_down(heap: MinHeap, index: int) -> MinHeap:
     right = 2 * index + 2
     size = len(new_heap)
 
+    if left >= size:
+        return MinHeap(new_heap)
+
     smallest = left 
 
     if right < size and new_heap[right] < new_heap[left]:
@@ -57,13 +60,18 @@ def heapify_down(heap: MinHeap, index: int) -> MinHeap:
 
 
 def extract_min(heap: MinHeap) -> tuple[MinHeap, Node]:
+    if len(heap.data) == 0:
+        raise IndexError("Heap is empty")
+    if len(heap.data) == 1:
+        return MinHeap([]), heap.data[0]
+    
     last_value = heap.data[-1]
     new_heap = [last_value] + heap.data[1:-1]
 
     min_element = heap.data[0]
 
     new_heap = heapify_down(MinHeap(new_heap), 0)
-    return MinHeap(new_heap), min_element
+    return new_heap, min_element
         
 def count_frequency(s: str)-> dict[str,int]:
     frequency = {}
@@ -83,7 +91,7 @@ def create_priority_queue(frequency: dict[str, int]) -> MinHeap:
     return heap
 
 
-def build_tree(priority_queue: MinHeap) -> Node:
+def build_tree_from_queue(priority_queue: MinHeap) -> Node:
     while len(priority_queue.data) > 1:
 
         priority_queue, left = extract_min(priority_queue)
@@ -100,15 +108,37 @@ def build_tree(priority_queue: MinHeap) -> Node:
 def generate_codes(node: Node | None, prefix="", code: dict | None =None)-> dict:
     if code is None:
         code = {}  
-    
+    if node is not None:
+        if node.char:
+            if prefix == "":
+                code[node.char] = "0"
+            else:
+                code[node.char] = prefix
+        generate_codes(node.left, prefix + "0", code)
+        generate_codes(node.right, prefix + "1", code)
+    return code
 
 
 def encode(s: str, codes: dict)-> str:
-    pass
+    encoded_string = ""
+    for char in s:
+        encoded_string += codes[char]
+    return encoded_string
 
 
 def decode(encoded_string: str, root: Node):
-    pass
+    decoded_string = ""
+    current_node = root
+    for bit in encoded_string:
+        if bit == '0':
+            current_node = current_node.left
+        else:
+            current_node = current_node.right
+
+        if current_node.char:  
+            decoded_string += current_node.char
+            current_node = root  
+    return decoded_string
 
 def huffman_encoding(s:str):
     #Do Not Change this function
