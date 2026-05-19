@@ -3,13 +3,11 @@ from proj3 import *
 
 class TestHuffmanEncoding(unittest.TestCase):
     def test_heapify_up(self):
-        heap = MinHeap()
-        heap = insert(heap, Node(5, "a"))
-        heap = insert(heap, Node(2, "b"))
-        heap = insert(heap, Node(8, "c"))
-
-        self.assertEqual(len(heap.data), 3)
-        self.assertEqual(heap.data[0].freq, 2)
+        heap = MinHeap([Node(5, 'a'), Node(3, 'b'), Node(1, 'c')])
+        new_heap = heapify_up(heap, 2)
+        self.assertEqual(new_heap.data[0].char, 'c')
+        self.assertEqual(new_heap.data[0].freq, 1)
+        self.assertEqual(len(new_heap.data), 3)
 
     def test_insert(self):
         heap = MinHeap([Node(3, 'b'), Node(5, 'a')])
@@ -35,13 +33,22 @@ class TestHuffmanEncoding(unittest.TestCase):
         self.assertEqual(decoded, "aaaa")
         self.assertEqual(codes, {'a': '0'})
 
-    def test_empty_string(self):
-        frequency = count_frequency("")
-        self.assertEqual(frequency, {})
+    def test_encode_empty_string(self):
+        encoded = encode("", {'a': '0'})
+        self.assertEqual(encoded, "")
+    
+    def test_decode_empty_string(self):
+        root = Node(1, 'a')
+        decoded = decode("", root)
+        self.assertEqual(decoded, "")
+    
+    def test_tree_shape(self):
+        frequency = {'a': 5, 'b': 3, 'c': 1}
+        priority_queue = create_priority_queue(frequency)
+        tree = build_tree_from_queue(priority_queue)
+        self.assertEqual(tree.freq, 9)
+        self.assertEqual(tree.left.freq, 4)
+        self.assertEqual(tree.right.freq, 5)
 
 if __name__ == "__main__":
     unittest.main()
-
-#Test heapify_up, insert, and extract_min independently.
-# Test trees and encoding/decoding with edge cases (e.g., empty strings, single characters, repeated characters).
-# Use assertions to check both return values and structural properties (e.g., length of heap, code lengths, tree shape).

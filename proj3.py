@@ -91,7 +91,10 @@ def create_priority_queue(frequency: dict[str, int]) -> MinHeap:
     return heap
 
 
-def build_tree_from_queue(priority_queue: MinHeap) -> Node:
+def build_tree_from_queue(priority_queue: MinHeap) -> Node | None:
+    if len(priority_queue.data) == 0:
+        return None
+    
     while len(priority_queue.data) > 1:
 
         priority_queue, left = extract_min(priority_queue)
@@ -125,24 +128,26 @@ def encode(s: str, codes: dict)-> str:
         encoded_string += codes[char]
     return encoded_string
 
-
-def decode(encoded_string: str, root: Node):
+def decode(encoded_string: str, root: Node | None):
+    if root is None:
+        return ""
+    
     decoded_string = ""
     current_node = root
+
+    if root.left is None and root.right is None:
+        return root.char * len(encoded_string)
+
     for bit in encoded_string:
         if bit == '0':
             current_node = current_node.left
         else:
             current_node = current_node.right
 
-        if current_node is None:
+        if current_node.left is None and current_node.right is None:
+            decoded_string += current_node.char
             current_node = root
-            decoded_string += current_node.char
-            continue
 
-        if current_node.left is None and current_node.right is None:  
-            decoded_string += current_node.char
-            current_node = root  
     return decoded_string
 
 def huffman_encoding(s:str):
@@ -154,4 +159,3 @@ def huffman_encoding(s:str):
     encoded_string = encode(s, codes)
     decoded_string = decode(encoded_string,root)
     return encoded_string, decoded_string, codes
-
